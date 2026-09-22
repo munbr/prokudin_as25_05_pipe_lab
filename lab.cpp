@@ -21,14 +21,14 @@ void settings_cs(CS& cs)
     while((!(cin>>cs.num_workshops) || cs.num_workshops <= 0))
     {
         cin.clear();
-        cin.ignore(10000,'\n');
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
         cout << "Ошибка. Задайте осмысленное кол-во цехов:" << endl;
     }
     cout << "Выберите сколько цехов в работе:" << endl;
-    while( !(cin>>cs.num_on_workshops) || cs.num_on_workshops < 0 || cs.num_on_workshops > cs.num_workshops)
+    while(!(cin>>cs.num_on_workshops) || cs.num_on_workshops < 0 || cs.num_on_workshops > cs.num_workshops)
     {
         cin.clear();
-        cin.ignore(10000,'\n');
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
         cout << "Ошибка. Задайте осмысленное кол-во цехов:" << endl;
     }
     cout << "Задайте характеристику КС:" << endl;
@@ -54,7 +54,7 @@ void edit_cs(CS& cs)
         while (!(cin >> check) || check < 0 || check > 1)
         {
             cin.clear();
-            cin.ignore(10000, '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Ошибка.\n" << "Выберите, что вы хотите отредактировать?\n" << "1 - изменить работающие цеха\n" << "0 - закончить редактирование" << endl;
         }
         switch (check)
@@ -65,7 +65,7 @@ void edit_cs(CS& cs)
             while(!(cin>>cs.num_on_workshops) || cs.num_on_workshops < 0 || cs.num_on_workshops > cs.num_workshops)
             {
                 cin.clear();
-                cin.ignore(10000,'\n');
+                cin.ignore(numeric_limits<streamsize>::max(),'\n');
                 cout << "Ошибка. Введите число от 0 до "  << cs.num_workshops << endl;
             }
             break;
@@ -109,7 +109,7 @@ void settings_pipe(PIPE& pipe)
     while( !(cin >> pipe.pipe_length) || pipe.pipe_length <= 0)
     {
         cin.clear();
-        cin.ignore(10000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Ошибка.\n" << "Задайте осмысленную длину трубы:" << endl;
     }
 
@@ -117,7 +117,7 @@ void settings_pipe(PIPE& pipe)
     while(!(cin >> pipe.pipe_diam) || pipe.pipe_diam <= 0)
     {
         cin.clear();
-        cin.ignore(10000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Ошибка.\n" << "Задайте осмысленный диаметр трубы:" << endl;
     }
 
@@ -127,7 +127,7 @@ void settings_pipe(PIPE& pipe)
     while( !(cin >> isBreak) || isBreak < 0 || isBreak > 1)
     {
         cin.clear();
-        cin.ignore(10000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Ошибка.\n" << "В работе ли труба?\n" << "Выберете 0 - если труба в ремонте, 1 - если труба работоспособна." << endl;
     }
     pipe.pipe_tech = (isBreak == 1);
@@ -149,7 +149,7 @@ void edit_pipe(PIPE& p)
         while(!(cin >> check) || check < 0 || check > 1)
         {
             cin.clear();
-            cin.ignore(10000, '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Ошибка.\n" << "Выберите, что вы хотите отредактировать\n" << "1 - в ремонте ли труба\n" <<"0 - закончить редактирование" << endl;
         }
         switch (check)
@@ -160,7 +160,7 @@ void edit_pipe(PIPE& p)
             while(!(cin >> isBreak) || isBreak < 0 || isBreak > 1)
             {
                 cin.clear();
-                cin.ignore(10000, '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Ошибка.\n" << "В работе ли труба?\n" << "Выберете 0 - если труба в ремонте, 1 - если труба работоспособна." << endl;   
             }
             p.pipe_tech = (isBreak == 1);
@@ -310,7 +310,7 @@ int main()
         while( !(cin >> option) || option < 0 || option > 7)
         {
             cin.clear();
-            cin.ignore(10000, '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Ошибка.\n" << "Выберите опцию\n" << "1 - Создать трубу\n"  << "2 - Редактировать трубу\n" << "3 - Создать КС\n" << "4 - Редактировать КС\n" << "5 - Посмотреть все элементы\n" << "6 - Сохранить элементы\n"  << "7 - Загрузить элементы\n" << "0 - Выйти из программы" << endl;
         }
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
