@@ -4,8 +4,43 @@
 #include<limits>
 using namespace std;
 
-struct CS
+template <typename T>
+T read_number(const string& prompt, T lo, T hi)
 {
+    T value;
+    cout << prompt << endl;
+    while(!(cin>>value) || value < lo || value > hi)
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        cout << "Ошибка. " << prompt << endl;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    return value;
+}
+
+string read_line(const string& prompt)
+{
+    string s;
+    cout << prompt << endl;
+    while (s.empty()) getline(cin, s);
+    return s;
+}
+void print_menu()
+{
+    cout << "Выберите опцию\n"
+         << "1 - Создать трубу\n"
+         << "2 - Редактировать трубу\n"
+         << "3 - Создать КС\n"
+         << "4 - Редактировать КС\n"
+         << "5 - Посмотреть все элементы\n"
+         << "6 - Сохранить элементы\n"
+         << "7 - Загрузить элементы\n"
+         << "0 - Выйти из программы" << endl;
+}
+
+struct CS
+{   
     string name;
     int num_workshops = 0;
     int num_on_workshops = 0;
@@ -15,25 +50,10 @@ struct CS
 
 void settings_cs(CS& cs)
 {
-    cout << "Задайте имя КС:" << endl;
-    while(cs.name.empty()) getline(cin,cs.name);
-    cout << "Задайте кол-во цехов:" << endl;
-    while((!(cin>>cs.num_workshops) || cs.num_workshops <= 0))
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(),'\n');
-        cout << "Ошибка. Задайте осмысленное кол-во цехов:" << endl;
-    }
-    cout << "Выберите сколько цехов в работе:" << endl;
-    while(!(cin>>cs.num_on_workshops) || cs.num_on_workshops < 0 || cs.num_on_workshops > cs.num_workshops)
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(),'\n');
-        cout << "Ошибка. Задайте осмысленное кол-во цехов:" << endl;
-    }
-    cout << "Задайте характеристику КС:" << endl;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    getline(cin,cs.station_class);
+    cs.name = read_line("Задайте имя КС:");
+    cs.num_workshops = read_number("Задайте кол-во цехов:", 1, INT_MAX);
+    cs.num_on_workshops = read_number("Выберите сколько цехов в работе:", 0, cs.num_workshops);
+    cs.station_class = read_line("Задайте характеристику КС:");
     cs.is_created = true;
     cout <<  "КС " << cs.name << " задана" << endl;
 }
@@ -44,38 +64,14 @@ void edit_cs(CS& cs)
         cout << "КС ещё не создана — нечего редактировать." << endl;
         return;
     }
-    bool flag = 1;
-    while (flag != 0)
+    while (true)
     {
-        cout << "Выберите, что вы хотите отредактировать?" << endl;
-        cout << "1 - Изменить работающие цеха.\n" << "0 - Закончить редактирование." << endl;
-        int check;
+        int check = read_number("1 - Изменить работающие цеха.\n0 - Закончить редактирование.", 0, 1);
         
-        while (!(cin >> check) || check < 0 || check > 1)
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка.\n" << "Выберите, что вы хотите отредактировать?\n" << "1 - изменить работающие цеха\n" << "0 - закончить редактирование" << endl;
-        }
-        switch (check)
-        {
-        case 1:
-            
-            cout << "Сколько цехов в работе?" << endl;
-            while(!(cin>>cs.num_on_workshops) || cs.num_on_workshops < 0 || cs.num_on_workshops > cs.num_workshops)
-            {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(),'\n');
-                cout << "Ошибка. Введите число от 0 до "  << cs.num_workshops << endl;
-            }
-            break;
-        case 0:
-            flag = 0;
-            break;
+        if(check == 0) break;
+
+        cs.num_on_workshops = read_number("1 - Изменить работающие цеха.\n0 - Закончить редактирование.", 0, cs.num_workshops);
         
-        default:
-            break;
-        }
     }
 
 }
@@ -91,6 +87,7 @@ void show_cs(const CS& cs)
     cout << "Кол-во цехов в работе - " << cs.num_on_workshops << endl;
     cout << "Характеристика КС - " << cs.station_class << endl;
 }
+
 struct PIPE
 {   
     string name;
@@ -102,34 +99,10 @@ struct PIPE
 
 void settings_pipe(PIPE& pipe)
 {
-    cout << "Задайте имя трубы:" << endl;
-    while(pipe.name.empty()) getline(cin,pipe.name);
-
-    cout << "Задайте длину трубы:" << endl;
-    while( !(cin >> pipe.pipe_length) || pipe.pipe_length <= 0)
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ошибка.\n" << "Задайте осмысленную длину трубы:" << endl;
-    }
-
-    cout << "Задайте диаметр трубы:" << endl;
-    while(!(cin >> pipe.pipe_diam) || pipe.pipe_diam <= 0)
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ошибка.\n" << "Задайте осмысленный диаметр трубы:" << endl;
-    }
-
-    cout << "В работе ли труба?" << endl;
-    cout << "Выберете 0 - если труба в ремонте, 1 - если труба работоспособна" << endl;
-    int isBreak;
-    while( !(cin >> isBreak) || isBreak < 0 || isBreak > 1)
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ошибка.\n" << "В работе ли труба?\n" << "Выберете 0 - если труба в ремонте, 1 - если труба работоспособна." << endl;
-    }
+    pipe.name = read_line("Задайте имя трубы:");
+    pipe.pipe_length = read_number("Задайте длину трубы:", 1, INT_MAX);
+    pipe.pipe_diam = read_number("Задайте диаметр трубы:", 1, INT_MAX);
+    int isBreak = read_number("В работе ли труба?\nВыберете 0 - если труба в ремонте\n1 - если труба работоспособна", 0, 1);
     pipe.pipe_tech = (isBreak == 1);
     pipe.is_created = true;
     cout << "Труба " << pipe.name << " задана" << endl;
@@ -141,36 +114,12 @@ void edit_pipe(PIPE& p)
         cout << "Труба ещё не создана — нечего редактировать." << endl;
         return;
     }
-    bool flag = 1;
-    while (flag != 0)
+    while (true)
     {
-    cout << "Выберите, что вы хотите отредактировать\n" << "1 - в ремонте ли труба\n" <<"0 - закончить редактирование" << endl;
-        int check;
-        while(!(cin >> check) || check < 0 || check > 1)
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка.\n" << "Выберите, что вы хотите отредактировать\n" << "1 - в ремонте ли труба\n" <<"0 - закончить редактирование" << endl;
-        }
-        switch (check)
-        {
-        case 1:
-            cout << "Выберете 0 - если труба в ремонте, 1 - если труба работоспособна" << endl;
-            int isBreak;
-            while(!(cin >> isBreak) || isBreak < 0 || isBreak > 1)
-            {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Ошибка.\n" << "В работе ли труба?\n" << "Выберете 0 - если труба в ремонте, 1 - если труба работоспособна." << endl;   
-            }
-            p.pipe_tech = (isBreak == 1);
-            break;
-        case 0:
-            flag = 0;
-            break;
-        default: 
-            break;
-        }
+        int check = read_number("Выберите, что вы хотите отредактировать\n1 - в ремонте ли труба\n0 - закончить редактирование", 0, 1);
+        if (check == 0) break;
+        int isBreak = read_number("Выберете 0 - если труба в ремонте, 1 - если труба работоспособна", 0, 1);
+        p.pipe_tech = (isBreak == 1);
     }
     cout << "Труба " << p.name << " отредактирована" << endl;
 }
@@ -184,14 +133,7 @@ void show_pipe(const PIPE& pipe)
     cout << "Название трубы - " << pipe.name << endl;
     cout << "Диаметр трубы - " << pipe.pipe_diam << endl;
     cout << "Длина трубы - " << pipe.pipe_length << endl;
-    if (pipe.pipe_tech == 1)
-    {
-        cout << "Труба в работе" << endl;    
-    }
-    else
-    {
-        cout << "Труба не работает" << endl;
-    }
+    cout << (pipe.pipe_tech? "Труба в работе" : "Труба не работает") << endl;
 }
 
 void save_cs(ofstream& file, const CS& cs)
@@ -280,7 +222,6 @@ void load_pipe(ifstream& file, PIPE& pipe)
         cout << "Файл повреждён (блок трубы)." << endl;
         return;
     }
-
     if (pipe_created)
     {
         getline(file, pipe.name);
@@ -303,8 +244,6 @@ void load_all(CS& cs, PIPE& pipe)
         cout << "Файл save.txt не найден." << endl;
         return;
     }
-
-
     load_cs(file, cs);
     load_pipe(file, pipe);
     if (!file)
@@ -320,52 +259,34 @@ void load_all(CS& cs, PIPE& pipe)
 }
 int main()
 {
-    bool flag = 1;
     PIPE pipe;
     CS cs;
-    while (flag != 0)
+    while (true)
     {
-        cout << "Выберите опцию\n" << "1 - Создать трубу\n"  << "2 - Редактировать трубу\n" << "3 - Создать КС\n" << "4 - Редактировать КС\n" << "5 - Посмотреть все элементы\n" << "6 - Сохранить элементы\n"  << "7 - Загрузить элементы\n" << "0 - Выйти из программы" << endl;
-        int option;
-        while( !(cin >> option) || option < 0 || option > 7)
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка.\n" << "Выберите опцию\n" << "1 - Создать трубу\n"  << "2 - Редактировать трубу\n" << "3 - Создать КС\n" << "4 - Редактировать КС\n" << "5 - Посмотреть все элементы\n" << "6 - Сохранить элементы\n"  << "7 - Загрузить элементы\n" << "0 - Выйти из программы" << endl;
-        }
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        print_menu();
+        int option = read_number("", 0, 7);
         switch (option)
         {
         case 1:
-            settings_pipe(pipe);
-            break;
+            settings_pipe(pipe);          break;
         case 2:
-            edit_pipe(pipe);
-            break;
+            edit_pipe(pipe);              break;
         case 3:
-            settings_cs(cs);
-            break;
+            settings_cs(cs);              break;
         case 4:
-            edit_cs(cs);
-            break;
+            edit_cs(cs);                  break;
         case 5:
-            show_pipe(pipe);
-            show_cs(cs);
-            break;
+            show_pipe(pipe); show_cs(cs); break;
         case 6:
-            save_all(cs,pipe);
-            break;
+            save_all(cs,pipe);            break;
         case 7:
-            load_all(cs, pipe);
-            break;
+            load_all(cs, pipe);           break;
         case 0:
-            flag = 0;
-            break;
+        break;
 
         default:
             break;
-        }
-        
+        }  
     }
     return 0;
 }
