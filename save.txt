@@ -1,9 +1,10 @@
-1 1
-qwerty
-12
-tea
-3
+1
+tre
+4
+chukcha
+2
+1
 tren
-10
-120
+321
+123
 1

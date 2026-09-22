@@ -194,6 +194,28 @@ void show_pipe(const PIPE& pipe)
     }
 }
 
+void save_cs(ofstream& file, const CS& cs)
+{
+    file << cs.is_created << endl;
+    if (cs.is_created)
+    {
+        file << cs.name << endl;
+        file << cs.num_workshops << endl;
+        file << cs.station_class << endl;
+        file << cs.num_on_workshops << endl;
+    }
+}
+void save_pipe(ofstream& file, const PIPE& pipe)
+{
+    file << pipe.is_created << endl;
+    if (pipe.is_created)
+    {
+        file << pipe.name << endl;
+        file << pipe.pipe_diam << endl;
+        file << pipe.pipe_length << endl;
+        file << pipe.pipe_tech << endl;
+    }
+}
 void save_all(const CS& cs, const PIPE& pipe)
 {
     if (!cs.is_created && !pipe.is_created)
@@ -208,27 +230,8 @@ void save_all(const CS& cs, const PIPE& pipe)
         cout << "Не удалось открыть файл для записи." << endl;
         return;
     }
-
-    //флаги
-    file << cs.is_created << " " << pipe.is_created << endl;
-
-    //блок CS
-    if (cs.is_created)
-    {
-        file << cs.name << endl;
-        file << cs.num_workshops << endl;
-        file << cs.station_class << endl;
-        file << cs.num_on_workshops << endl;
-    }
-
-    //блок PIPE
-    if (pipe.is_created)
-    {
-        file << pipe.name << endl;
-        file << pipe.pipe_diam << endl;
-        file << pipe.pipe_length << endl;
-        file << pipe.pipe_tech << endl;
-    }
+    save_cs(file, cs);                     
+    save_pipe(file, pipe);
     if(!file)
     {
         file.close();
@@ -238,26 +241,19 @@ void save_all(const CS& cs, const PIPE& pipe)
     file.close();
     cout << "Сохранение выполнено." << endl;
 }   
-void load_all(CS& cs, PIPE& pipe)
-{
-    ifstream file("save.txt");
-    if (!file.is_open())
-    {
-        cout << "Файл save.txt не найден." << endl;
-        return;
-    }
 
-    int cs_created = 0, pipe_created = 0;
-    file >> cs_created >> pipe_created;
+void load_cs(ifstream& file, CS& cs)
+{
+    int cs_created = 0;
+    file >> cs_created;
     file.ignore(numeric_limits<streamsize>::max(), '\n');
 
     if (!file)
     {
-        cout << "Файл повреждён (не читаются флаги)." << endl;
+        cout << "Файл повреждён (блок КС)." << endl;
         return;
     }
 
-    // блок CS 
     if (cs_created)
     {
         getline(file, cs.name);
@@ -272,8 +268,19 @@ void load_all(CS& cs, PIPE& pipe)
     {
         cs.is_created = false;
     }
+}
+void load_pipe(ifstream& file, PIPE& pipe)
+{
+    int pipe_created = 0;
+    file >> pipe_created;
+    file.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    // блок PIPE 
+    if (!file)
+    {
+        cout << "Файл повреждён (блок трубы)." << endl;
+        return;
+    }
+
     if (pipe_created)
     {
         getline(file, pipe.name);
@@ -287,6 +294,19 @@ void load_all(CS& cs, PIPE& pipe)
     {
         pipe.is_created = false;
     }
+}
+void load_all(CS& cs, PIPE& pipe)
+{
+    ifstream file("save.txt");
+    if (!file.is_open())
+    {
+        cout << "Файл save.txt не найден." << endl;
+        return;
+    }
+
+
+    load_cs(file, cs);
+    load_pipe(file, pipe);
     if (!file)
         {
             cout << "Файл повреждён (не хватает данных)." << endl;
