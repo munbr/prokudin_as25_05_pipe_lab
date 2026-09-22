@@ -36,7 +36,7 @@ void print_menu()
          << "5 - Посмотреть все элементы\n"
          << "6 - Сохранить элементы\n"
          << "7 - Загрузить элементы\n"
-         << "0 - Выйти из программы" << endl;
+         << "0 - Выйти из программы";
 }
 
 struct CS
@@ -102,7 +102,7 @@ void settings_pipe(PIPE& pipe)
     pipe.name = read_line("Задайте имя трубы:");
     pipe.pipe_length = read_number("Задайте длину трубы:", 1, INT_MAX);
     pipe.pipe_diam = read_number("Задайте диаметр трубы:", 1, INT_MAX);
-    int isBreak = read_number("В работе ли труба?\nВыберете 0 - если труба в ремонте\n1 - если труба работоспособна", 0, 1);
+    int isBreak = read_number("В работе ли труба?\nВыберите\n0 - если труба в ремонте\n1 - если труба работоспособна", 0, 1);
     pipe.pipe_tech = (isBreak == 1);
     pipe.is_created = true;
     cout << "Труба " << pipe.name << " задана" << endl;
@@ -285,7 +285,7 @@ int main()
         break;
 
         default:
-            break;
+            break; 
         }  
     }
     return 0;
